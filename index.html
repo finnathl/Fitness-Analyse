@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fitness Analyse · Fragebogen</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F4EF;
+    --surface: #FFFFFF;
+    --ink: #1A1A18;
+    --ink-muted: #6B6860;
+    --ink-hint: #A8A59F;
+    --accent: #2D5A3D;
+    --accent-light: #E8F0EA;
+    --accent-mid: #4A8C62;
+    --warn: #8B3A2F;
+    --border: rgba(26,26,24,0.12);
+    --border-strong: rgba(26,26,24,0.25);
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .site-header {
+    background: var(--accent);
+    color: #fff;
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 40px,
+      rgba(255,255,255,0.03) 40px,
+      rgba(255,255,255,0.03) 41px
+    );
+  }
+  .site-header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+    position: relative;
+  }
+  .site-header p {
+    font-size: 15px;
+    color: rgba(255,255,255,0.7);
+    max-width: 520px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 100px;
+    padding: 4px 14px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 1.25rem;
+    position: relative;
+  }
+  .dot { width: 6px; height: 6px; background: #7EE8A2; border-radius: 50%; }
+
+  /* PROGRESS */
+  .progress-wrap {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .progress-inner {
+    max-width: 780px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+  }
+  .progress-fill {
+    height: 4px;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.35s ease;
+    width: 0%;
+  }
+  .progress-label {
+    font-size: 12px;
+    color: var(--ink-muted);
+    min-width: 36px;
+    text-align: right;
+  }
+
+  /* LAYOUT */
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  /* SECTION CARDS */
+  .section-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .section-card:focus-within {
+    box-shadow: 0 0 0 2px var(--accent-light);
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .sec-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--ink);
+  }
+  .section-body {
+    padding: 1.5rem;
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  /* FIELD */
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .required { color: var(--accent); font-size: 11px; }
+  .field-hint {
+    font-size: 12px;
+    color: var(--ink-muted);
+    font-style: italic;
+    margin-top: -2px;
+  }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  @media(max-width: 560px) { .row2, .row3 { grid-template-columns: 1fr; } }
+
+  /* INPUTS */
+  input[type=text], input[type=number], input[type=email], textarea, select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    resize: vertical;
+    appearance: none;
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
+  }
+  textarea { min-height: 80px; }
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B6860' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    cursor: pointer;
+  }
+
+  /* PILL BUTTONS */
+  .pill-group { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill {
+    background: var(--bg);
+    border: 1px solid var(--border-strong);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: var(--ink-muted);
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .pill:hover { border-color: var(--accent); color: var(--accent); }
+  .pill.sel {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .pill.sel-multi {
+    background: var(--accent-light);
+    border-color: var(--accent-mid);
+    color: var(--accent);
+  }
+
+  /* SCALE */
+  .scale-wrap { display: flex; gap: 6px; }
+  .scale-btn {
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--bg);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .scale-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .scale-btn.sel { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--ink-hint);
+    margin-top: 4px;
+  }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--border); margin: 0.25rem 0; }
+
+  /* SUBMIT SECTION */
+  .submit-card {
+    background: var(--accent);
+    border-radius: var(--radius-lg);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    color: #fff;
+  }
+  .submit-card h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+  }
+  .submit-card p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 1.5rem;
+  }
+  .btn-submit {
+    background: #fff;
+    color: var(--accent);
+    border: none;
+    border-radius: 100px;
+    padding: 14px 40px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+  .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,0.2); }
+  .btn-submit:active { transform: scale(0.98); }
+
+  /* SUCCESS */
+  .success-screen {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 3rem 2rem;
+    text-align: center;
+    margin-top: 2rem;
+  }
+  .success-screen.show { display: block; }
+  .success-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--accent-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.25rem;
+  }
+  .success-icon svg { width: 28px; height: 28px; stroke: var(--accent); }
+  .success-screen h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 0.75rem;
+  }
+  .success-screen p { color: var(--ink-muted); font-size: 14px; max-width: 420px; margin: 0 auto; }
+
+  /* ERROR */
+  .error-msg {
+    background: #FEF0EE;
+    border: 1px solid #F5C0B8;
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--warn);
+    display: none;
+    margin-top: 1rem;
+  }
+  .error-msg.show { display: block; }
+
+  /* FOOTNOTE */
+  .footnote {
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-hint);
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-badge"><div class="dot"></div> Individueller Fitness-Analysebogen</div>
+  <h1>Deine persönliche<br><em>Sport-Analyse</em></h1>
+  <p>Fülle diesen Bogen ehrlich und vollständig aus. Je mehr Details, desto präziser deine individuelle Auswertung.</p>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-inner">
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+    <span class="progress-label" id="prog-label">0%</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- Verstecktes Formular für Formspree -->
+<form id="main-form" action="https://formspree.io/f/DEINE_FORMSPREE_ID" method="POST" style="display:none">
+  <input type="hidden" name="_subject" value="Neuer Fitness-Fragebogen eingegangen">
+  <input type="hidden" name="_replyto" id="f-email">
+  <input type="hidden" name="Name" id="f-name">
+  <input type="hidden" name="Alle_Antworten" id="f-alle">
+</form>
+
+<!-- SUCCESS -->
+<div class="success-screen" id="success-screen">
+  <div class="success-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  </div>
+  <h2>Fragebogen eingereicht!</h2>
+  <p>Vielen Dank – deine Antworten wurden erfolgreich übermittelt. Du erhältst in Kürze eine persönliche Analyse.</p>
+</div>
+
+<div id="form-content">
+
+<!-- 0 · Kontaktdaten -->
+<div class="section-card">
+  <div class="section-header">
+    <div class="sec-num">✦</div>
+    <div class="section-title">Kontaktdaten</div>
+  </div>
+  <div class="section-body">
+    <div class="row2">
+      <div class="field">
+        <label>Vorname & Nachname <span class="required">Pflichtfeld</span></label>
+        <input type="text" id="name" placeholder="z. B. Max Mustermann">
+      </div>
+      <div class="field">
+        <label>E-Mail-Adresse <span class="required">Pflichtfeld</span></label>
+        <input type="email" id="email" placeholder="deine@email.de">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 1 · Persönliche Daten -->
+<div class="section-card">
+  <div class="section-header">
+    <div class="sec-num">1</div>
+    <div class="section-title">Persönliche Daten & Ausgangslage</div>
+  </div>
+  <div class="section-body">
+    <div class="row3">
+      <div class="field">
+        <label>Alter</label>
+        <input type="number" id="alter" placeholder="z. B. 34" min="10" max="100">
+      </div>
+      <div class="field">
+        <label>Größe (cm)</label>
+        <input type="number" id="groesse" placeholder="z. B. 178">
+      </div>
+      <div class="field">
+        <label>Gewicht (kg)</label>
+        <input type="number" id="gewicht" placeholder="z. B. 82">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Biologisches Geschlecht</label>
+      <div class="pill-group" id="geschlecht">
+        <div class="pill" onclick="solo(this,'geschlecht')">Männlich</div>
+        <div class="pill" onclick="solo(this,'geschlecht')">Weiblich</div>
+        <div class="pill" onclick="solo(this,'geschlecht')">Divers / keine Angabe</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Aktueller Fitnesszustand</label>
+      <div class="pill-group" id="fitstatus">
+        <div class="pill" onclick="solo(this,'fitstatus')">Kompletter Anfänger</div>
+        <div class="pill" onclick="solo(this,'fitstatus')">Wiedereinsteiger</div>
+        <div class="pill" onclick="solo(this,'fitstatus')">Gelegentlich aktiv</div>
+        <div class="pill" onclick="solo(this,'fitstatus')">Regelmäßig trainierend</div>
+        <div class="pill" onclick="solo(this,'fitstatus')">Fortgeschritten</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Körperliche Einschränkungen, Verletzungen, Erkrankungen</label>
+      <span class="field-hint">z. B. Rückenprobleme, Knie, Bluthochdruck – oder „Keine"</span>
+      <textarea id="einschraenkungen" placeholder="Beschreibe bekannte Einschränkungen ..."></textarea>
+    </div>
+
+    <div class="field">
+      <label>Allergien oder Unverträglichkeiten</label>
+      <input type="text" id="allergien" placeholder="z. B. Laktose, Gluten – oder &quot;Keine&quot;">
+    </div>
+
+    <div class="field">
+      <label>Bisherige Sporterfahrung</label>
+      <span class="field-hint">Welche Sportarten, wie lange, warum aufgehört?</span>
+      <textarea id="sporterfahrung" placeholder="z. B. 3 Jahre Fußball bis 2018, seitdem nichts ..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- 2 · Zielsetzung -->
+<div class="section-card">
+  <div class="section-header">
+    <div class="sec-num">2</div>
+    <div class="section-title">Zielsetzung</div>
+  </div>
+  <div class="section-body">
+    <div class="field">
+      <label>Primäres Ziel (max. 2 auswählen)</label>
+      <div class="pill-group" id="ziel">
+        <div class="pill" onclick="multi(this,'ziel',2)">Fettabbau / Abnehmen</div>
+        <div class="pill" onclick="multi(this,'ziel',2)">Muskelaufbau</div>
+        <div class="pill" onclick="multi(this,'ziel',2)">Körper definieren</div>
+        <div class="pill" onclick="multi(this,'ziel',2)">Ausdauer verbessern</div>
+        <div class="pill" onclick="multi(this,'ziel',2)">Kraft steigern</div>
+        <div class="pill" onclick="multi(this,'ziel',2)">Allgemeine Gesundheit</div>
+        <div class="pill" onclick="multi(this,'ziel',2)">Stressabbau</div>
+        <div class="pill" onclick="multi(this,'ziel',2)">Sportliche Leistung</div>
+      </div>
+    </div>
+    <div class="row3">
+      <div class="field">
+        <label>Ziel in 4 Wochen</label>
+        <textarea id="ziel4w" placeholder="Was willst du in 4 Wochen erreicht haben?"></textarea>
+      </div>
+      <div class="field">
+        <label>Ziel in 3 Monaten</label>
+        <textarea id="ziel3m" placeholder="Was willst du in 3 Monaten erreicht haben?"></textarea>
+      </div>
+      <div class="field">
+        <label>Ziel in 12 Monaten</label>
+        <textarea id="ziel12m" placeholder="Was willst du in 12 Monaten erreicht haben?"></textarea>
+      </div>
+    </div>
+    <div class="field">
+      <label>Warum willst du jetzt starten? (tiefster Antrieb)</label>
+      <textarea id="motivation" placeholder="Je ehrlicher, desto besser – kein Urteil ..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- 3 · Lebensstil -->
+<div class="section-card">
+  <div class="section-header">
+    <div class="sec-num">3</div>
+    <div class="section-title">Aktueller Lebensstil</div>
+  </div>
+  <div class="section-body">
+    <div class="field">
+      <label>Berufsfeld / Alltag</label>
+      <div class="pill-group" id="beruf">
+        <div class="pill" onclick="solo(this,'beruf')">Überwiegend sitzend (Büro, HO)</div>
+        <div class="pill" onclick="solo(this,'beruf')">Mischung</div>
+        <div class="pill" onclick="solo(this,'beruf')">Körperlich aktiv</div>
+      </div>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>Schlafdauer pro Nacht</label>
+        <div class="pill-group" id="schlaf">
+          <div class="pill" onclick="solo(this,'schlaf')">< 5 h</div>
+          <div class="pill" onclick="solo(this,'schlaf')">5–6 h</div>
+          <div class="pill" onclick="solo(this,'schlaf')">6–7 h</div>
+          <div class="pill" onclick="solo(this,'schlaf')">7–8 h</div>
+          <div class="pill" onclick="solo(this,'schlaf')">> 8 h</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Wasseraufnahme täglich</label>
+        <div class="pill-group" id="wasser">
+          <div class="pill" onclick="solo(this,'wasser')">< 1 L</div>
+          <div class="pill" onclick="solo(this,'wasser')">1–1,5 L</div>
+          <div class="pill" onclick="solo(this,'wasser')">1,5–2 L</div>
+          <div class="pill" onclick="solo(this,'wasser')">2–3 L</div>
+          <div class="pill" onclick="solo(this,'wasser')">3+ L</div>
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Stresslevel im Alltag (1 = kein Stress, 10 = maximal)</label>
+      <div class="scale-wrap" id="stress">
+        <div class="scale-btn" onclick="scl(this,'stress')">1</div>
+        <div class="scale-btn" onclick="scl(this,'stress')">2</div>
+        <div class="scale-btn" onclick="scl(this,'stress')">3</div>
+        <div class="scale-btn" onclick="scl(this,'stress')">4</div>
+        <div class="scale-btn" onclick="scl(this,'stress')">5</div>
+        <div class="scale-btn" onclick="scl(this,'stress')">6</div>
+        <div class="scale-btn" onclick="scl(this,'stress')">7</div>
+        <div class="scale-btn" onclick="scl(this,'stress')">8</div>
+        <div class="scale-btn" onclick="scl(this,'stress')">9</div>
+        <div class="scale-btn" onclick="scl(this,'stress')">10</div>
+      </div>
+      <div class="scale-labels"><span>kein Stress</span><span>maximaler Stress</span></div>
+    </div>
+    <div class="field">
+      <label>Ernährungsweise</label>
+      <div class="pill-group" id="ernaehrung">
+        <div class="pill" onclick="multi(this,'ernaehrung',99)">Alles (Omnivore)</div>
+        <div class="pill" onclick="multi(this,'ernaehrung',99)">Vegetarisch</div>
+        <div class="pill" onclick="multi(this,'ernaehrung',99)">Vegan</div>
+        <div class="pill" onclick="multi(this,'ernaehrung',99)">Low Carb / Keto</div>
+        <div class="pill" onclick="multi(this,'ernaehrung',99)">Intermittent Fasting</div>
+        <div class="pill" onclick="multi(this,'ernaehrung',99)">Keine feste Form</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Typischer Ernährungsalltag</label>
+      <span class="field-hint">Was isst du morgens, mittags, abends? Fast Food, Alkohol, Süßes?</span>
+      <textarea id="ernaehrungalltag" placeholder="z. B. Frühstück übersprungen, Mittag Kantine, Abends groß, 2x/Woche Alkohol ..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- 4 · Körperliche Analyse -->
+<div class="section-card">
+  <div class="section-header">
+    <div class="sec-num">4</div>
+    <div class="section-title">Körperliche Analyse</div>
+  </div>
+  <div class="section-body">
+    <div class="row3">
+      <div class="field">
+        <label>Kraft (1–5)</label>
+        <div class="scale-wrap" id="kraft">
+          <div class="scale-btn" onclick="scl(this,'kraft')">1</div>
+          <div class="scale-btn" onclick="scl(this,'kraft')">2</div>
+          <div class="scale-btn" onclick="scl(this,'kraft')">3</div>
+          <div class="scale-btn" onclick="scl(this,'kraft')">4</div>
+          <div class="scale-btn" onclick="scl(this,'kraft')">5</div>
+        </div>
+        <div class="scale-labels"><span>schwach</span><span>stark</span></div>
+      </div>
+      <div class="field">
+        <label>Ausdauer (1–5)</label>
+        <div class="scale-wrap" id="ausdauer">
+          <div class="scale-btn" onclick="scl(this,'ausdauer')">1</div>
+          <div class="scale-btn" onclick="scl(this,'ausdauer')">2</div>
+          <div class="scale-btn" onclick="scl(this,'ausdauer')">3</div>
+          <div class="scale-btn" onclick="scl(this,'ausdauer')">4</div>
+          <div class="scale-btn" onclick="scl(this,'ausdauer')">5</div>
+        </div>
+        <div class="scale-labels"><span>schlecht</span><span>sehr gut</span></div>
+      </div>
+      <div class="field">
+        <label>Mobilität (1–5)</label>
+        <div class="scale-wrap" id="mobilitaet">
+          <div class="scale-btn" onclick="scl(this,'mobilitaet')">1</div>
+          <div class="scale-btn" onclick="scl(this,'mobilitaet')">2</div>
+          <div class="scale-btn" onclick="scl(this,'mobilitaet')">3</div>
+          <div class="scale-btn" onclick="scl(this,'mobilitaet')">4</div>
+          <div class="scale-btn" onclick="scl(this,'mobilitaet')">5</div>
+        </div>
+        <div class="scale-labels"><span>sehr steif</span><span>beweglich</span></div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Bekannte Haltungsprobleme / Dysbalancen</label>
+      <textarea id="haltung" placeholder="z. B. Hohlkreuz, Rundrücken, Nackenverspannungen ..."></textarea>
+    </div>
+    <div class="field">
+      <label>Welche Bewegungen sind schmerzhaft? (Mehrfach möglich)</label>
+      <div class="pill-group" id="schmerz">
+        <div class="pill" onclick="multi(this,'schmerz',99)">Tiefe Kniebeuge</div>
+        <div class="pill" onclick="multi(this,'schmerz',99)">Liegestütze</div>
+        <div class="pill" onclick="multi(this,'schmerz',99)">Vorwärtsbeugen</div>
+        <div class="pill" onclick="multi(this,'schmerz',99)">Überkopfbewegung</div>
+        <div class="pill" onclick="multi(this,'schmerz',99)">Treppensteigen</div>
+        <div class="pill" onclick="multi(this,'schmerz',99)">Laufen / Joggen</div>
+        <div class="pill" onclick="multi(this,'schmerz',99)">Keine Schmerzen</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5 · Trainingsrahmen -->
+<div class="section-card">
+  <div class="section-header">
+    <div class="sec-num">5</div>
+    <div class="section-title">Trainingsrahmen & Ressourcen</div>
+  </div>
+  <div class="section-body">
+    <div class="row2">
+      <div class="field">
+        <label>Verfügbare Zeit pro Woche</label>
+        <div class="pill-group" id="zeit">
+          <div class="pill" onclick="solo(this,'zeit')">1–2 h</div>
+          <div class="pill" onclick="solo(this,'zeit')">3–4 h</div>
+          <div class="pill" onclick="solo(this,'zeit')">5–6 h</div>
+          <div class="pill" onclick="solo(this,'zeit')">7–10 h</div>
+          <div class="pill" onclick="solo(this,'zeit')">10+ h</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Bevorzugte Trainingszeiten</label>
+        <div class="pill-group" id="trainingszeit">
+          <div class="pill" onclick="multi(this,'trainingszeit',99)">Früh morgens</div>
+          <div class="pill" onclick="multi(this,'trainingszeit',99)">Vormittags</div>
+          <div class="pill" onclick="multi(this,'trainingszeit',99)">Mittags</div>
+          <div class="pill" onclick="multi(this,'trainingszeit',99)">Nachmittags</div>
+          <div class="pill" onclick="multi(this,'trainingszeit',99)">Abends</div>
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Verfügbare Infrastruktur</label>
+      <div class="pill-group" id="infra">
+        <div class="pill" onclick="multi(this,'infra',99)">Fitnessstudio</div>
+        <div class="pill" onclick="multi(this,'infra',99)">Heimtraining (kein Equipment)</div>
+        <div class="pill" onclick="multi(this,'infra',99)">Heimtraining (mit Geräten)</div>
+        <div class="pill" onclick="multi(this,'infra',99)">Outdoor / Park</div>
+        <div class="pill" onclick="multi(this,'infra',99)">Sportverein</div>
+        <div class="pill" onclick="multi(this,'infra',99)">Schwimmbad</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Verfügbares Equipment (falls Heimtraining)</label>
+      <textarea id="equipment" placeholder="z. B. Kurzhanteln, Klimmzugstange, Widerstandsbänder – oder &quot;kein Equipment&quot;"></textarea>
+    </div>
+    <div class="field">
+      <label>Sport-Präferenzen & Abneigungen</label>
+      <textarea id="sport_praef" placeholder="z. B. Laufen mag ich, Schwimmen vermeiden, Yoga interessiert mich ..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- 6 · Ernährung vertieft -->
+<div class="section-card">
+  <div class="section-header">
+    <div class="sec-num">6</div>
+    <div class="section-title">Ernährung (vertieft)</div>
+  </div>
+  <div class="section-body">
+    <div class="row2">
+      <div class="field">
+        <label>Proteinkonsum (Einschätzung)</label>
+        <div class="pill-group" id="protein">
+          <div class="pill" onclick="solo(this,'protein')">Sehr gering</div>
+          <div class="pill" onclick="solo(this,'protein')">Mittel</div>
+          <div class="pill" onclick="solo(this,'protein')">Hoch</div>
+          <div class="pill" onclick="solo(this,'protein')">Weiß nicht</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Alkoholkonsum</label>
+        <div class="pill-group" id="alkohol">
+          <div class="pill" onclick="solo(this,'alkohol')">Kein</div>
+          <div class="pill" onclick="solo(this,'alkohol')">Selten (< 1x/Woche)</div>
+          <div class="pill" onclick="solo(this,'alkohol')">1–2x/Woche</div>
+          <div class="pill" onclick="solo(this,'alkohol')">3–4x/Woche</div>
+          <div class="pill" onclick="solo(this,'alkohol')">Täglich</div>
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Aktuelle Nahrungsergänzungsmittel</label>
+      <input type="text" id="supplemente" placeholder="z. B. Vitamin D, Magnesium, Whey – oder &quot;Keine&quot;">
+    </div>
+    <div class="field">
+      <label>Zuckerverlangen / Heißhunger auf Süßes (1–5)</label>
+      <div class="scale-wrap" id="zucker">
+        <div class="scale-btn" onclick="scl(this,'zucker')">1</div>
+        <div class="scale-btn" onclick="scl(this,'zucker')">2</div>
+        <div class="scale-btn" onclick="scl(this,'zucker')">3</div>
+        <div class="scale-btn" onclick="scl(this,'zucker')">4</div>
+        <div class="scale-btn" onclick="scl(this,'zucker')">5</div>
+      </div>
+      <div class="scale-labels"><span>kein Verlangen</span><span>sehr stark</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- 7 · Regeneration -->
+<div class="section-card">
+  <div class="section-header">
+    <div class="sec-num">7</div>
+    <div class="section-title">Regeneration & Schlaf</div>
+  </div>
+  <div class="section-body">
+    <div class="row2">
+      <div class="field">
+        <label>Einschlafen (Uhrzeit)</label>
+        <input type="text" id="schlafein" placeholder="z. B. 23:30 Uhr">
+      </div>
+      <div class="field">
+        <label>Aufstehen (Uhrzeit)</label>
+        <input type="text" id="schlafauf" placeholder="z. B. 06:30 Uhr">
+      </div>
+    </div>
+    <div class="field">
+      <label>Schlafprobleme</label>
+      <div class="pill-group" id="schlafproblem">
+        <div class="pill" onclick="solo(this,'schlafproblem')">Keine, schlafe gut</div>
+        <div class="pill" onclick="solo(this,'schlafproblem')">Gelegentlich</div>
+        <div class="pill" onclick="solo(this,'schlafproblem')">Einschlafprobleme</div>
+        <div class="pill" onclick="solo(this,'schlafproblem')">Durchschlafprobleme</div>
+        <div class="pill" onclick="solo(this,'schlafproblem')">Beides</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Tagesmüdigkeit / Energielosigkeit</label>
+      <div class="pill-group" id="muede">
+        <div class="pill" onclick="solo(this,'muede')">Selten</div>
+        <div class="pill" onclick="solo(this,'muede')">1–2x/Woche</div>
+        <div class="pill" onclick="solo(this,'muede')">Fast täglich</div>
+        <div class="pill" onclick="solo(this,'muede')">Dauerhaft erschöpft</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Aktuelle Regenerationsgewohnheiten</label>
+      <div class="pill-group" id="regen">
+        <div class="pill" onclick="multi(this,'regen',99)">Passiv (schlafen, entspannen)</div>
+        <div class="pill" onclick="multi(this,'regen',99)">Spazierengehen</div>
+        <div class="pill" onclick="multi(this,'regen',99)">Stretching / Yoga</div>
+        <div class="pill" onclick="multi(this,'regen',99)">Sauna / Kälte</div>
+        <div class="pill" onclick="multi(this,'regen',99)">Keine bewusste Regen.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 8 · Mentale Faktoren -->
+<div class="section-card">
+  <div class="section-header">
+    <div class="sec-num">8</div>
+    <div class="section-title">Mentale Faktoren & Gewohnheiten</div>
+  </div>
+  <div class="section-body">
+    <div class="field">
+      <label>Warum bist du bisher gescheitert oder hast aufgehört?</label>
+      <span class="field-hint">Ehrlichkeit ist entscheidend – kein Urteil!</span>
+      <textarea id="gescheitert" placeholder="z. B. Keine Zeit, Motivation verloren, Verletzung ..."></textarea>
+    </div>
+    <div class="field">
+      <label>Größter befürchteter Hinderungsgrund diesmal</label>
+      <textarea id="hindernis" placeholder="z. B. Unregelmäßige Arbeitszeiten, fehlendes Umfeld ..."></textarea>
+    </div>
+    <div class="field">
+      <label>Selbsteinschätzung Disziplin / Willenskraft (1–10)</label>
+      <div class="scale-wrap" id="disziplin">
+        <div class="scale-btn" onclick="scl(this,'disziplin')">1</div>
+        <div class="scale-btn" onclick="scl(this,'disziplin')">2</div>
+        <div class="scale-btn" onclick="scl(this,'disziplin')">3</div>
+        <div class="scale-btn" onclick="scl(this,'disziplin')">4</div>
+        <div class="scale-btn" onclick="scl(this,'disziplin')">5</div>
+        <div class="scale-btn" onclick="scl(this,'disziplin')">6</div>
+        <div class="scale-btn" onclick="scl(this,'disziplin')">7</div>
+        <div class="scale-btn" onclick="scl(this,'disziplin')">8</div>
+        <div class="scale-btn" onclick="scl(this,'disziplin')">9</div>
+        <div class="scale-btn" onclick="scl(this,'disziplin')">10</div>
+      </div>
+      <div class="scale-labels"><span>sehr niedrig</span><span>sehr hoch</span></div>
+    </div>
+    <div class="field">
+      <label>Umgang mit Rückschlägen</label>
+      <div class="pill-group" id="rueckschlag">
+        <div class="pill" onclick="solo(this,'rueckschlag')">Gebe schnell auf</div>
+        <div class="pill" onclick="solo(this,'rueckschlag')">Kurze Pause, dann weiter</div>
+        <div class="pill" onclick="solo(this,'rueckschlag')">Analysiere und passe an</div>
+        <div class="pill" onclick="solo(this,'rueckschlag')">Holt mich selten aus der Bahn</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Was motiviert dich am stärksten? (Mehrfach möglich)</label>
+      <div class="pill-group" id="motiv_art">
+        <div class="pill" onclick="multi(this,'motiv_art',99)">Sichtbare Körperveränderung</div>
+        <div class="pill" onclick="multi(this,'motiv_art',99)">Besseres Energieniveau</div>
+        <div class="pill" onclick="multi(this,'motiv_art',99)">Zahlen & Tracking (Apps)</div>
+        <div class="pill" onclick="multi(this,'motiv_art',99)">Soziale Komponente</div>
+        <div class="pill" onclick="multi(this,'motiv_art',99)">Challenges / Wettkampf</div>
+        <div class="pill" onclick="multi(this,'motiv_art',99)">Gewohnheit & Struktur</div>
+        <div class="pill" onclick="multi(this,'motiv_art',99)">Gesundheitliche Notwendigkeit</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 9 · Fortschritt & Sonstiges -->
+<div class="section-card">
+  <div class="section-header">
+    <div class="sec-num">9</div>
+    <div class="section-title">Fortschritt & Abschluss</div>
+  </div>
+  <div class="section-body">
+    <div class="field">
+      <label>Tracking-Methoden (Mehrfach möglich)</label>
+      <div class="pill-group" id="tracking">
+        <div class="pill" onclick="multi(this,'tracking',99)">Körpergewicht</div>
+        <div class="pill" onclick="multi(this,'tracking',99)">Körpermaße</div>
+        <div class="pill" onclick="multi(this,'tracking',99)">Leistungswerte</div>
+        <div class="pill" onclick="multi(this,'tracking',99)">Fotos</div>
+        <div class="pill" onclick="multi(this,'tracking',99)">App / Tagebuch</div>
+        <div class="pill" onclick="multi(this,'tracking',99)">Wohlbefinden</div>
+        <div class="pill" onclick="multi(this,'tracking',99)">Kein Tracking</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Knappste Ressource</label>
+      <div class="pill-group" id="engpass">
+        <div class="pill" onclick="solo(this,'engpass')">Zeit</div>
+        <div class="pill" onclick="solo(this,'engpass')">Geld / Budget</div>
+        <div class="pill" onclick="solo(this,'engpass')">Wissen / Orientierung</div>
+        <div class="pill" onclick="solo(this,'engpass')">Willenskraft</div>
+        <div class="pill" onclick="solo(this,'engpass')">Energie / Erholung</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Deine absolute Top-Priorität in den nächsten 4 Wochen (ein Satz)</label>
+      <input type="text" id="prioritaet" placeholder="z. B. Einfach anfangen und 3x/Woche trainieren – ohne Ausreden.">
+    </div>
+    <div class="field">
+      <label>Sonstiges – was war noch nicht abgefragt?</label>
+      <textarea id="sonstiges" placeholder="Besondere Umstände, Wünsche, wichtige Hintergründe ..."></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="error-msg" id="error-msg">Bitte fülle mindestens Name und E-Mail aus, bevor du absendest.</div>
+
+<!-- SUBMIT -->
+<div class="submit-card">
+  <h3>Alles ausgefüllt?</h3>
+  <p>Klicke auf Absenden – du erhältst eine Bestätigung und deine individuelle Analyse per E-Mail.</p>
+  <button class="btn-submit" onclick="handleSubmit()">Fragebogen absenden</button>
+</div>
+
+<div class="footnote">
+  Deine Daten werden ausschließlich zur Erstellung deiner persönlichen Analyse genutzt und nicht an Dritte weitergegeben.
+</div>
+
+</div><!-- /form-content -->
+</div><!-- /container -->
+
+<script>
+function solo(el, grp) {
+  document.querySelectorAll('#'+grp+' .pill').forEach(p => p.classList.remove('sel'));
+  el.classList.add('sel');
+  updateProg();
+}
+function multi(el, grp, max) {
+  const sels = document.querySelectorAll('#'+grp+' .pill.sel-multi');
+  if (el.classList.contains('sel-multi')) {
+    el.classList.remove('sel-multi');
+  } else if (sels.length < max) {
+    el.classList.add('sel-multi');
+  }
+  updateProg();
+}
+function scl(el, grp) {
+  document.querySelectorAll('#'+grp+' .scale-btn').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+  updateProg();
+}
+function getVal(id) {
+  const el = document.getElementById(id);
+  if (!el) return '';
+  if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return el.value.trim();
+  const s1 = el.querySelectorAll('.pill.sel');
+  const s2 = el.querySelectorAll('.pill.sel-multi');
+  const s3 = el.querySelectorAll('.scale-btn.sel');
+  const all = [...s1, ...s2, ...s3];
+  return all.map(x => x.textContent.trim()).join(', ');
+}
+function updateProg() {
+  const ids = ['name','email','alter','groesse','gewicht','einschraenkungen','sporterfahrung',
+    'ziel4w','ziel3m','ziel12m','motivation','ernaehrungalltag','haltung','equipment','sport_praef',
+    'supplemente','schlafein','schlafauf','gescheitert','hindernis','prioritaet'];
+  const groups = ['geschlecht','fitstatus','beruf','schlaf','wasser','stress','ernaehrung',
+    'kraft','ausdauer','mobilitaet','schmerz','zeit','infra','protein','alkohol','zucker',
+    'schlafproblem','muede','regen','disziplin','rueckschlag','motiv_art','tracking','engpass'];
+  let filled = 0, total = ids.length + groups.length;
+  ids.forEach(id => { const v = document.getElementById(id); if (v && v.value.trim()) filled++; });
+  groups.forEach(g => { if (document.querySelector('#'+g+' .pill.sel, #'+g+' .pill.sel-multi, #'+g+' .scale-btn.sel')) filled++; });
+  const pct = Math.round((filled / total) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = pct + '%';
+}
+function handleSubmit() {
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const err = document.getElementById('error-msg');
+  if (!name || !email) { err.classList.add('show'); err.scrollIntoView({behavior:'smooth',block:'center'}); return; }
+  err.classList.remove('show');
+
+  const fields = [
+    ['Name', getVal('name')], ['E-Mail', getVal('email')],
+    ['--- PERSÖNLICHE DATEN ---',''],
+    ['Alter', getVal('alter')], ['Größe', getVal('groesse')], ['Gewicht', getVal('gewicht')],
+    ['Geschlecht', getVal('geschlecht')], ['Fitnessstatus', getVal('fitstatus')],
+    ['Einschränkungen', getVal('einschraenkungen')], ['Allergien', getVal('allergien')],
+    ['Sporterfahrung', getVal('sporterfahrung')],
+    ['--- ZIELE ---',''],
+    ['Primäres Ziel', getVal('ziel')], ['Ziel 4 Wochen', getVal('ziel4w')],
+    ['Ziel 3 Monate', getVal('ziel3m')], ['Ziel 12 Monate', getVal('ziel12m')],
+    ['Motivation', getVal('motivation')],
+    ['--- LEBENSSTIL ---',''],
+    ['Berufsfeld', getVal('beruf')], ['Schlafdauer', getVal('schlaf')],
+    ['Stresslevel', getVal('stress')], ['Wasseraufnahme', getVal('wasser')],
+    ['Ernährungsweise', getVal('ernaehrung')], ['Ernährungsalltag', getVal('ernaehrungalltag')],
+    ['--- KÖRPER ---',''],
+    ['Kraft', getVal('kraft')], ['Ausdauer', getVal('ausdauer')], ['Mobilität', getVal('mobilitaet')],
+    ['Haltungsprobleme', getVal('haltung')], ['Schmerzhafte Bewegungen', getVal('schmerz')],
+    ['--- TRAINING ---',''],
+    ['Zeit/Woche', getVal('zeit')], ['Trainingszeiten', getVal('trainingszeit')],
+    ['Infrastruktur', getVal('infra')], ['Equipment', getVal('equipment')],
+    ['Sportpräferenzen', getVal('sport_praef')],
+    ['--- ERNÄHRUNG ---',''],
+    ['Protein', getVal('protein')], ['Alkohol', getVal('alkohol')],
+    ['Supplemente', getVal('supplemente')], ['Zuckerverlangen', getVal('zucker')],
+    ['--- SCHLAF & REGEN ---',''],
+    ['Einschlafen', getVal('schlafein')], ['Aufstehen', getVal('schlafauf')],
+    ['Schlafprobleme', getVal('schlafproblem')], ['Tagesmüdigkeit', getVal('muede')],
+    ['Regeneration', getVal('regen')],
+    ['--- MENTAL ---',''],
+    ['Warum gescheitert', getVal('gescheitert')], ['Hindernis', getVal('hindernis')],
+    ['Disziplin (1-10)', getVal('disziplin')], ['Rückschläge', getVal('rueckschlag')],
+    ['Motivationstyp', getVal('motiv_art')],
+    ['--- ABSCHLUSS ---',''],
+    ['Tracking', getVal('tracking')], ['Engpass', getVal('engpass')],
+    ['Top-Priorität', getVal('prioritaet')], ['Sonstiges', getVal('sonstiges')]
+  ];
+
+  const text = fields.map(f => f[0].startsWith('---') ? '\n' + f[0] : f[0] + ': ' + (f[1]||'–')).join('\n');
+
+  document.getElementById('f-name').value = name;
+  document.getElementById('f-email').value = email;
+  document.getElementById('f-alle').value = text;
+
+  const form = document.getElementById('main-form');
+  const data = new FormData(form);
+
+  fetch(form.action, {
+    method: 'POST',
+    body: data,
+    headers: { 'Accept': 'application/json' }
+  }).then(r => {
+    if (r.ok) {
+      document.getElementById('form-content').style.display = 'none';
+      document.getElementById('success-screen').classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      alert('Fehler beim Senden. Bitte versuche es erneut oder kontaktiere uns direkt.');
+    }
+  }).catch(() => {
+    alert('Netzwerkfehler. Bitte prüfe deine Verbindung und versuche es erneut.');
+  });
+}
+document.querySelectorAll('input, textarea').forEach(el => el.addEventListener('input', updateProg));
+</script>
+</body>
+</html>
